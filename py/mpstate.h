@@ -36,6 +36,10 @@
 #include "py/objlist.h"
 #include "py/objexcept.h"
 
+#if MICROPY_PY_BLUETOOTH
+#include "extmod/modbluetooth.h"
+#endif
+
 // This file contains structures defining the state of the MicroPython
 // memory system, runtime and virtual machine.  The state is a global
 // variable, but in the future it is hoped that the state can become local.
@@ -181,6 +185,15 @@ typedef struct _mp_state_vm_t {
     #if MICROPY_VFS
     struct _mp_vfs_mount_t *vfs_cur;
     struct _mp_vfs_mount_t *vfs_mount_table;
+    #endif
+
+    #if MICROPY_PY_BLUETOOTH
+    // This is a linked list of callbacks registered in the Bluetooth
+    // object.
+    mp_bt_characteristic_callback_t *bt_characteristic_callbacks;
+    // This is a function object called for global events (device
+    // connect/disconnect).
+    mp_obj_t bt_event_handler;
     #endif
 
     //
